@@ -117,7 +117,40 @@ class KategoriProdukController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $this->validate($request, [
+                'nama' => ['required'],
+                'deskripsi' => ['required'],
+            ]);
+
+            $data = $request->except('_data');
+            $kategori = KategoriProduk::findorFail($id);
+
+            $kategori->update($data);
+
+            return ResponseFormatter::success(
+                $kategori,
+                'Berhasil update kategori produk'
+            );
+        } catch (ValidationException $e) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Something went wrong',
+                    'error' => $e->validator->errors(),
+                ],
+                'Error',
+                500
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Something went wrong',
+                    'error' => $error->getMessage(),
+                ],
+                'Error',
+                500
+            );
+        }
     }
 
     /**
@@ -128,6 +161,23 @@ class KategoriProdukController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $produk = KategoriProduk::findorFail($id);
+
+            $produk->delete();
+
+            return ResponseFormatter::success(
+                'Berhasil Menghapus kategori produk'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Something went wrong',
+                    'error' => $error->getMessage(),
+                ],
+                'Error',
+                500
+            );
+        }
     }
 }

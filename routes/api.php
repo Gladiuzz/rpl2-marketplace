@@ -24,8 +24,11 @@ Route::group(['prefix' => 'v1'], function() {
     // kategori produk
     Route::get('kategori-produk', [KategoriProdukController::class, 'index']);
     Route::post('kategori-produk', [KategoriProdukController::class, 'store']);
+    Route::put('kategori-produk/{id}', [KategoriProdukController::class, 'update']);
 
     // produk
     Route::get('produk', [ProdukController::class, 'index']);
     Route::post('produk', [ProdukController::class, 'store']);
+    Route::put('produk/{id}', [ProdukController::class, 'update']);
+    Route::delete('produk/{id}', [ProdukController::class, 'destroy']);
 });

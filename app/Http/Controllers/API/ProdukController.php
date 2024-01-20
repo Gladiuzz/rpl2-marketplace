@@ -119,7 +119,42 @@ class ProdukController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $this->validate($request, [
+                'id_kategori' => ['required'],
+                'nama' => ['required'],
+                'jumlah' => ['required', 'numeric'],
+                'harga' => ['required', 'numeric'],
+            ]);
+
+            $data = $request->except('_data');
+            $produk = Produk::findorFail($id);
+
+            $produk->update($data);
+
+            return ResponseFormatter::success(
+                $produk,
+                'Berhasil update produk'
+            );
+        } catch (ValidationException $e) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Something went wrong',
+                    'error' => $e->validator->errors(),
+                ],
+                'Error',
+                500
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Something went wrong',
+                    'error' => $error->getMessage(),
+                ],
+                'Error',
+                500
+            );
+        }
     }
 
     /**
@@ -130,6 +165,23 @@ class ProdukController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $produk = Produk::findorFail($id);
+
+            $produk->delete();
+
+            return ResponseFormatter::success(
+                'Berhasil Menghapus produk'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Something went wrong',
+                    'error' => $error->getMessage(),
+                ],
+                'Error',
+                500
+            );
+        }
     }
 }

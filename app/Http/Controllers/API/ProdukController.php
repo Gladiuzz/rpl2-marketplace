@@ -23,7 +23,7 @@ class ProdukController extends Controller
         if ($produk) {
             return ResponseFormatter::success(
                 $produk,
-                'Berhasil mengambil data produk'
+                'Berhasil mengambil list data produk'
             );
         } else {
             return ResponseFormatter::error(
@@ -96,7 +96,20 @@ class ProdukController extends Controller
      */
     public function show($id)
     {
-        //
+        $produk = Produk::findorFail($id);
+
+        if ($produk) {
+            return ResponseFormatter::success(
+                $produk,
+                'Berhasil mengambil data produk'
+            );
+        } else {
+            return ResponseFormatter::error(
+                null,
+                'Data produk tidak ada',
+                404,
+            );
+        }
     }
 
     /**

@@ -23,7 +23,7 @@ class KategoriProdukController extends Controller
         if ($kategori) {
             return ResponseFormatter::success(
                 $kategori,
-                'Berhasil mengambil data kategori produk'
+                'Berhasil mengambil list data kategori produk'
             );
         } else {
             return ResponseFormatter::error(
@@ -94,7 +94,20 @@ class KategoriProdukController extends Controller
      */
     public function show($id)
     {
-        //
+        $kategori = KategoriProduk::findorFail($id);
+
+        if ($kategori) {
+            return ResponseFormatter::success(
+                $kategori,
+                'Berhasil mengambil data kategori produk'
+            );
+        } else {
+            return ResponseFormatter::error(
+                null,
+                'Data kategori produk tidak ada',
+                404,
+            );
+        }
     }
 
     /**

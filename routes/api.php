@@ -46,6 +46,8 @@ Route::group(['prefix' => 'v1'], function() {
         Route::get('produk/{id}', [ProdukController::class, 'show']);
         Route::put('produk/{id}', [ProdukController::class, 'update']);
         Route::delete('produk/{id}', [ProdukController::class, 'destroy']);
+
+        // user
     });
 
 });

@@ -15,10 +15,13 @@ return new class extends Migration
     {
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('id_pesanan');
+            $table->unsignedBigInteger('id_pesanan');
             $table->string('metode');
             $table->string('status');
             $table->timestamps();
+
+
+            $table->foreign('id_pesanan')->references('id')->on('pesanan');
         });
     }
 

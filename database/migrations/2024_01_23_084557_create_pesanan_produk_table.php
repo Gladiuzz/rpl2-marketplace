@@ -15,10 +15,13 @@ return new class extends Migration
     {
         Schema::create('pesanan_produk', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('id_pesanan');
-            $table->unsignedInteger('id_produk');
+            $table->unsignedBigInteger('id_pesanan');
+            $table->unsignedBigInteger('id_produk');
             $table->integer('jumlah_produk');
             $table->timestamps();
+
+            $table->foreign('id_pesanan')->references('id')->on('pesanan');
+            $table->foreign('id_produk')->references('id')->on('produk');
         });
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\KategoriProdukController;
+use App\Http\Controllers\API\PenjualController;
 use App\Http\Controllers\API\ProdukController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -47,7 +48,8 @@ Route::group(['prefix' => 'v1'], function() {
         Route::put('produk/{id}', [ProdukController::class, 'update']);
         Route::delete('produk/{id}', [ProdukController::class, 'destroy']);
 
-        // user
+        // penjual
+        Route::post('penjual-register', [PenjualController::class, 'daftarSebagaiSeller']);
     });
 
 });

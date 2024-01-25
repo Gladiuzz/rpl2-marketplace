@@ -15,11 +15,14 @@ return new class extends Migration
     {
         Schema::create('pesanan', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('id_user');
+            $table->unsignedBigInteger('id_user');
             $table->char('total_harga');
             $table->date('tanggal_pesanan');
             $table->string('status');
             $table->timestamps();
+
+
+            $table->foreign('id_user')->references('id')->on('users');
         });
     }
 

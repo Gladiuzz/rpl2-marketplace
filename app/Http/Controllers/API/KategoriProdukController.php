@@ -58,7 +58,7 @@ class KategoriProdukController extends Controller
                 'deskripsi' => ['required'],
             ]);
 
-            $data = $request->except('_data');
+            $data = $request->except('_token');
             $kategori = KategoriProduk::create($data);
 
             return ResponseFormatter::success(
@@ -136,7 +136,7 @@ class KategoriProdukController extends Controller
                 'deskripsi' => ['required'],
             ]);
 
-            $data = $request->except('_data');
+            $data = $request->except('_token');
             $kategori = KategoriProduk::findorFail($id);
 
             $kategori->update($data);

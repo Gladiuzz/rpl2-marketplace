@@ -60,7 +60,7 @@ class ProdukController extends Controller
                 'harga' => ['required', 'numeric'],
             ]);
 
-            $data = $request->except('_data');
+            $data = $request->except('_token');
             $produk = Produk::create($data);
 
             return ResponseFormatter::success(
@@ -140,7 +140,7 @@ class ProdukController extends Controller
                 'harga' => ['required', 'numeric'],
             ]);
 
-            $data = $request->except('_data');
+            $data = $request->except('_token');
             $produk = Produk::findorFail($id);
 
             $produk->update($data);

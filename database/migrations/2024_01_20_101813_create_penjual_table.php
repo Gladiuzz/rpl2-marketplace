@@ -15,7 +15,12 @@ return new class extends Migration
     {
         Schema::create('penjual', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_user');
+            $table->string('nama_toko');
+            $table->string('alamat_toko');
             $table->timestamps();
+
+            $table->foreign('id_user')->references('id')->on('users');
         });
     }
 

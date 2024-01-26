@@ -175,9 +175,22 @@ class KategoriProdukController extends Controller
     public function destroy($id)
     {
         try {
-            $produk = KategoriProduk::findorFail($id);
+            $kategori = KategoriProduk::findorFail($id);
+            $jumlah_produk = $kategori->produk()->count();
 
-            $produk->delete();
+            if ($jumlah_produk > 0) {
+                return ResponseFormatter::error(
+                    [
+                        'message' => 'Terjadi Kesalahan',
+                        'error' => 'Kategori tidak dapat dihapus karena masih memiliki produk terkait!',
+                    ],
+                    'Error',
+                    500
+                );
+            } else {
+                $kategori->delete();
+            }
+
 
             return ResponseFormatter::success(
                 'Berhasil Menghapus kategori produk'
@@ -185,7 +198,7 @@ class KategoriProdukController extends Controller
         } catch (Exception $error) {
             return ResponseFormatter::error(
                 [
-                    'message' => 'Something went wrong',
+                    'message' => 'Terjadi Kesalahan',
                     'error' => $error->getMessage(),
                 ],
                 'Error',

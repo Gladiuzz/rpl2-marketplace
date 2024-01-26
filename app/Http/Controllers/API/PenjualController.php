@@ -15,7 +15,7 @@ class PenjualController extends Controller
     public function daftarSebagaiSeller(Request $request)
     {
         try {
-            $this->validate($request,[
+            $this->validate($request, [
                 'nama_toko' => ['required'],
                 'alamat_toko' => ['required'],
             ]);
@@ -23,6 +23,16 @@ class PenjualController extends Controller
             $user = Auth::user();
             $data = $request->except('_token');
             $data['id_user'] = $user->id;
+
+            if ($user->penjual->exists()) {
+                return ResponseFormatter::error(
+                    [
+                        'message' => 'User sudah menjadi penjual dengan toko bernama ' . $user->penjual->nama_toko,
+                    ],
+                    'Error',
+                    500
+                );
+            }
 
             $penjual = Penjual::create($data);
 
@@ -35,7 +45,6 @@ class PenjualController extends Controller
                 $penjual,
                 'Berhasil menjadi penjual'
             );
-
         } catch (ValidationException $e) {
             return ResponseFormatter::error(
                 [

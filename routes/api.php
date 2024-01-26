@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\KategoriProdukController;
 use App\Http\Controllers\API\PenjualController;
 use App\Http\Controllers\API\ProdukController;
+use App\Http\Controllers\API\TransaksiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +42,7 @@ Route::group(['prefix' => 'v1'], function() {
         Route::post('kategori-produk', [KategoriProdukController::class, 'store']);
         Route::get('kategori-produk/{id}', [KategoriProdukController::class, 'show']);
         Route::put('kategori-produk/{id}', [KategoriProdukController::class, 'update']);
+        Route::post('kategori-produk/{id}', [KategoriProdukController::class, 'destroy']);
 
         // produk
         Route::post('produk', [ProdukController::class, 'store']);
@@ -50,6 +52,9 @@ Route::group(['prefix' => 'v1'], function() {
 
         // penjual
         Route::post('penjual-register', [PenjualController::class, 'daftarSebagaiSeller']);
+
+        // Transaksi/Pesanan
+        Route::post('transaksi', [TransaksiController::class, 'membuatPesanan']);
     });
 
 });

@@ -12,7 +12,7 @@ class Pesanan extends Model
     protected $table = 'pesanan';
 
     protected $fillable = [
-        'id_user','total_harga','tanggal_pesanan','status'
+        'id_user','total_harga','tanggal_pesanan','status','invoice_number',
     ];
 
     public function user()

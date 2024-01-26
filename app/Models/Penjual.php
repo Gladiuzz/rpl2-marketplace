@@ -19,4 +19,9 @@ class Penjual extends Model
     {
         return $this->belongsTo(User::class, 'id_user', 'id');
     }
+
+    public function produk()
+    {
+        return $this->hasMany(Produk::class, 'id_penjual', 'id');
+    }
 }

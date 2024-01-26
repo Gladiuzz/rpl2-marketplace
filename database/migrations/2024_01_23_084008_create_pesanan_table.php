@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('pesanan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_user');
+            $table->string('invoice_number');
             $table->char('total_harga');
             $table->date('tanggal_pesanan');
             $table->string('status');

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Produk;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ProdukController extends Controller
@@ -58,10 +60,21 @@ class ProdukController extends Controller
                 'nama' => ['required'],
                 'jumlah' => ['required', 'numeric'],
                 'harga' => ['required', 'numeric'],
+                'gambar' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             ]);
 
             $data = $request->except('_token');
-            $produk = Produk::create($data);
+            $data['id_penjual'] = Auth::user()->id;
+            $gambar = $request->file('gambar');
+
+            if ($request->hasFile('gambar')) {
+                $file_name = time() . "_" . $gambar->getClientOriginalName();
+                $gambar->storeAs('public/produk', $file_name);
+
+                $data['gambar'] = $file_name;
+                $produk = Produk::create($data);
+            }
+
 
             return ResponseFormatter::success(
                 $produk,
@@ -138,10 +151,23 @@ class ProdukController extends Controller
                 'nama' => ['required'],
                 'jumlah' => ['required', 'numeric'],
                 'harga' => ['required', 'numeric'],
+                // 'gambar' => ['required','image','mimes:jpeg,png,jpg,gif','max:2048'],
             ]);
 
             $data = $request->except('_token');
             $produk = Produk::findorFail($id);
+
+            $gambar = $request->file('gambar');
+
+            if (!empty($gambar)) {
+                $old_path = 'public/produk/' . $produk->gambar;
+                Storage::delete($old_path);
+
+                $file_name = time() . "_" . $gambar->getClientOriginalName();
+                $gambar->storeAs('public/produk', $file_name);
+
+                $data['gambar'] = $file_name;
+            }
 
             $produk->update($data);
 

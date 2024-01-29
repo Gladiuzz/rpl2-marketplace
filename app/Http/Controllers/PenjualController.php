@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Penjual;
 use Illuminate\Http\Request;
 
 class PenjualController extends Controller
@@ -13,7 +14,9 @@ class PenjualController extends Controller
      */
     public function index()
     {
-        //
+        $penjual = Penjual::all();
+
+        return view('admin.penjual.index', compact('penjual'));
     }
 
     /**
@@ -23,7 +26,7 @@ class PenjualController extends Controller
      */
     public function create()
     {
-        //
+        // $user = User
     }
 
     /**

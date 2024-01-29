@@ -206,6 +206,8 @@ class ProdukController extends Controller
     {
         try {
             $produk = Produk::findorFail($id);
+            $old_path = 'public/produk/' . $produk->gambar;
+            Storage::delete($old_path);
 
             $produk->delete();
 

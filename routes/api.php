@@ -52,6 +52,7 @@ Route::group(['prefix' => 'v1'], function() {
 
         // penjual
         Route::post('penjual-register', [PenjualController::class, 'daftarSebagaiSeller']);
+        Route::get('penjual/{id_user}',[PenjualController::class, 'show']);
 
         // Transaksi/Pesanan
         Route::post('transaksi', [TransaksiController::class, 'membuatPesanan']);

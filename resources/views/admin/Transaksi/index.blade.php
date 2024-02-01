@@ -15,7 +15,7 @@
             </div>
         @endif
         <div class="ibox-title">
-            <h5>Data Transaction</h5>
+            <h5>Data Transaksi</h5>
             <div class="ibox-tools">
                 {{-- <a class="collapse-link">
                 <i class="fa fa-chevron-up"></i>
@@ -39,8 +39,8 @@
                 <table class="table table-striped table-bordered table-hover dataTables-example">
                     <thead>
                         <tr>
-                            <th>Nomor Invoice</th>
                             <th>Tanggal Pesanan</th>
+                            <th>Nomor Invoice</th>
                             <th>Pembeli</th>
                             <th>Total Harga</th>
                             <th>Status</th>

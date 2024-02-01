@@ -45,7 +45,7 @@ class PembeliController extends Controller
             'email' => ['required', 'unique:users,email', 'email'],
             'password' => ['required', 'min:6'],
             'no_telepon' => ['required', 'numeric'],
-            // 'avatar' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'avatar' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
         $data = $request->except('_token');

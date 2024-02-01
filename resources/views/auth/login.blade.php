@@ -47,9 +47,9 @@
                             <div class="d-grid">
                                 <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Sign
                                     in</button>
-                                <a href="{{ route('register') }}"
+                                {{-- <a href="{{ route('register') }}"
                                     class="btn btn-secondary btn-login text-uppercase fw-bold"
-                                    type="submit">Register</a>
+                                    type="submit">Register</a> --}}
                             </div>
                         </form>
                     </div>

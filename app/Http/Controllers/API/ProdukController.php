@@ -64,7 +64,7 @@ class ProdukController extends Controller
             ]);
 
             $data = $request->except('_token');
-            $data['id_penjual'] = Auth::user()->id;
+            $data['id_penjual'] = Auth::user()->penjual->id;
             $gambar = $request->file('gambar');
 
             if ($request->hasFile('gambar')) {

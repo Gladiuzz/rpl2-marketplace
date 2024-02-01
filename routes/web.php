@@ -28,7 +28,7 @@ Auth::routes();
 
 Route::group(['middleware' => 'auth'], function() {
     // Dashboard
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     // Produk
     Route::resource('produk', ProdukController::class);

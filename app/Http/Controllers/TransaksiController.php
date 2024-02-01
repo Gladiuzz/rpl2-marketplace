@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pesanan;
 use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
@@ -13,7 +14,9 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        //
+        $pesanan = Pesanan::all();
+
+        return view('admin.transaksi.index', compact('pesanan'));
     }
 
     /**

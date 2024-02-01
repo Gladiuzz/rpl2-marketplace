@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Penjual;
+use App\Models\Pesanan;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +25,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $penjual = Penjual::count();
+        $transaksi = Pesanan::count();
+
+        $data = array(
+            'penjual' => $penjual,
+            'transaksi' => $transaksi,
+        );
+
+        return view('home', $data);
     }
 }

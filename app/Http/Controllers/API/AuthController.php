@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -25,7 +26,7 @@ class AuthController extends Controller
 
             $data = $request->except('_token');
             $data['password'] = bcrypt($data['password']);
-            $data['role'] = 'User';
+            $data['role'] = 'Pembeli';
 
             $user = User::create($data);
 
@@ -62,21 +63,25 @@ class AuthController extends Controller
     {
         try {
             $this->validate($request, [
-                'identity' => ['required'],
+                'username' => ['required'],
                 'password' => ['required'],
             ]);
 
-            $loginType = filter_var($request->input('identity'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+            $loginType = filter_var($request->input('username'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
             $data = $request->except('_data');
 
             $credentials = [
-                $loginType => $data['identity'],
+                $loginType => $data['username'],
                 'password' => $data['password'],
             ];
 
 
+
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
+                if (!Hash::check($request->password, $user->password,[])) {
+                    throw new \Exception('Invalid Credentials');
+                }
                 $tokenResult = $user->createToken('authToken');
                 $tokenResult->expires_at = now()->addHour();
 
@@ -85,6 +90,10 @@ class AuthController extends Controller
                     'token_type' => 'Bearer',
                     'user' => $user
                 ], 'Login Berhasil');
+            } else {
+                return ResponseFormatter::error([
+                    'message' => 'Unauthorized',
+                ], 'Authentication Failed', 500);
             }
         } catch (ValidationException $e) {
             return ResponseFormatter::error(

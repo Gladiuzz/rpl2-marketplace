@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penjual;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PenjualController extends Controller
@@ -26,7 +27,10 @@ class PenjualController extends Controller
      */
     public function create()
     {
-        // $user = User
+        $user = User::where('role', '!=', 'Admin')
+            ->get();
+
+        return view('admin.penjual.manage', compact('user'));
     }
 
     /**
@@ -37,7 +41,28 @@ class PenjualController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'id_user' => ['required'],
+            'nama_toko' => ['required'],
+            'alamat_toko' => ['required'],
+        ]);
+
+        $data = $request->except('_token');
+        $user = User::where('id', $data['id_user'])->first();
+        $penjual = Penjual::where('id_user', $user->id);
+
+        if ($penjual->exists() == true) {
+            return redirect()->route('user-penjual.index')->with('error', 'User tersebut sudah memiliki toko');
+        }
+
+        Penjual::create($data);
+
+        if ($user->role != 'Admin') {
+            $user->role = 'Penjual';
+            $user->update();
+        }
+
+        return redirect()->route('user-penjual.index')->with('success', 'User ' . $user->nama . ' Berhasil Menjadi penjual');
     }
 
     /**
@@ -59,7 +84,16 @@ class PenjualController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::where('role', '!=', 'Admin')
+            ->get();
+        $penjual = Penjual::findorFail($id);
+
+        $data = array(
+            'user' => $user,
+            'penjual' => $penjual,
+        );
+
+        return view('admin.penjual.manage', $data);
     }
 
     /**
@@ -71,7 +105,18 @@ class PenjualController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'id_user' => ['required'],
+            'nama_toko' => ['required'],
+            'alamat_toko' => ['required'],
+        ]);
+
+        $data = $request->except('_token');
+        $penjual = Penjual::findorFail($id);
+
+        $penjual->update($data);
+
+        return redirect()->route('user-penjual.index')->with('success', 'toko Penjual ' . $penjual->user->nama . ' Berhasil Diupdate');
     }
 
     /**
@@ -82,6 +127,16 @@ class PenjualController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $penjual = Penjual::findorFail($id);
+        $user = User::findorFail($penjual->id_user);
+
+        if ($user->role != 'Admin') {
+            $user->role = 'Pembeli';
+            $user->update();
+        }
+
+        $penjual->delete();
+
+        return redirect()->route('user-penjual.index')->with('success', 'toko Penjual ' . $user->nama . ' Berhasil Dihapus');
     }
 }

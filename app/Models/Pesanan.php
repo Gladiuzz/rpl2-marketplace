@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,5 +29,10 @@ class Pesanan extends Model
     public function pesananProduk()
     {
         return $this->hasMany(PesananProduk::class, 'id_pesanan', 'id');
+    }
+
+    public function getTanggal()
+    {
+        return Carbon::parse($this->attributes['tanggal_pesanan'])->translatedFormat('l, d F Y');
     }
 }

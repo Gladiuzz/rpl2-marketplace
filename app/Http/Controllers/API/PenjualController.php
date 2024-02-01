@@ -14,12 +14,12 @@ use Illuminate\Validation\ValidationException;
 class PenjualController extends Controller
 {
     public function daftarSebagaiSeller(Request $request)
-    {
-        try {
-            $this->validate($request, [
-                'nama_toko' => ['required'],
-                'alamat_toko' => ['required'],
-            ]);
+{
+    try {
+        $this->validate($request, [
+            'nama_toko' => ['required'],
+            'alamat_toko' => ['required'],
+        ]);
 
             $user = Auth::user();
             $data = $request->except('_token');
@@ -35,12 +35,12 @@ class PenjualController extends Controller
                 );
             }
 
-            $penjual = Penjual::create($data);
+        $penjual = Penjual::create($data);
 
-            if ($user->role != 'Admin') {
-                $user->role = 'Penjual';
-                $user->update();
-            }
+        if ($user->role != 'Admin') {
+            $user->role = 'Penjual';
+            $user->update();
+        }
 
             return ResponseFormatter::success(
                 $penjual,

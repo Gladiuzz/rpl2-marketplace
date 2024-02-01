@@ -55,9 +55,9 @@
                                 <td>{{ $item->invoice_number }}</td>
                                 <td>{{ $item->user->nama }}</td>
                                 <td>@currency($item->total_harga)</td>
-                                <td>{{ $item->pembayaran->metode }}</td>
                                 <td class={{ $item->status == 'Cancelled' ? 'text-danger' : 'text-navy' }}>
                                     Pending</td>
+                                <td>{{ $item->pembayaran->metode }}</td>
                                 <td>
                                     <a href="{{ route('transaksi.show', ['transaksi' => $item->id]) }}"><i
                                             class='fa btn btn-primary fa-eye'></i></a>
@@ -66,12 +66,12 @@
                             </tr>
                         @endforeach
                     </tbody>
-                    @if (Auth::user()->role == 'seller')
+                    {{-- @if (Auth::user()->role == 'seller')
                         <tfoot>
                             <td class="bg-warning text-white" colspan="3">Total Penjualan</td>
                             <td class="bg-warning text-white" colspan="3">@currency($totalTransaction)</td>
                         </tfoot>
-                    @endif
+                    @endif --}}
                 </table>
             </div>
         </div>

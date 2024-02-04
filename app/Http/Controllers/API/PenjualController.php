@@ -136,4 +136,22 @@ class PenjualController extends Controller
             );
         }
     }
+    public function AllPenjual()
+{
+    $penjuals = Penjual::with('user')->get();
+
+    if ($penjuals->isNotEmpty()) {
+        return ResponseFormatter::success(
+            $penjuals,
+            'Berhasil mengambil data semua penjual'
+        );
+    } else {
+        return ResponseFormatter::error(
+            null,
+            'Data penjual tidak tersedia',
+            404
+        );
+    }
+}
+
 }

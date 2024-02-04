@@ -26,7 +26,7 @@ class AuthController extends Controller
 
             $data = $request->except('_token');
             $data['password'] = bcrypt($data['password']);
-            $data['role'] = 'Pembeli';
+            $data['role'] = 'User';
 
             $user = User::create($data);
 

@@ -48,7 +48,9 @@ class TransaksiController extends Controller
      */
     public function show($id)
     {
-        //
+        $transaksi = Pesanan::findorFail($id);
+
+        return view('admin.transaksi.invoice', compact('transaksi'));
     }
 
     /**

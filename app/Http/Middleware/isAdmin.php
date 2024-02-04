@@ -2,11 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\ResponseFormatter;
 use Closure;
 use Illuminate\Http\Request;
 
-class IsPenjual
+class isAdmin
 {
     /**
      * Handle an incoming request.
@@ -17,15 +16,11 @@ class IsPenjual
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user() && $request->user()->role != 'User') {
+        if ($request->user() && $request->user()->role == 'Admin') {
             return $next($request);
         }
 
-        return ResponseFormatter::error(
-            null,
-            'Unauthorized. hanya penjual dan admin yang bisa akses.',
-            404,
-        );
+        return redirect('/');
 
     }
 }

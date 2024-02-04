@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\KategoriProdukController;
+use App\Http\Controllers\API\PembeliController;
 use App\Http\Controllers\API\PenjualController;
 use App\Http\Controllers\API\ProdukController;
 use App\Http\Controllers\API\TransaksiController;
@@ -35,6 +36,14 @@ Route::group(['prefix' => 'v1'], function() {
     Route::get('produk', [ProdukController::class, 'index']);
 
     Route::middleware(['auth:sanctum'])->group(function() {
+        // user
+        Route::get('pembeli', [PembeliController::class, 'index']);
+        Route::put('pembeli', [PembeliController::class, 'update']);
+
+        // Transaksi/Pesanan
+        Route::get('transaksi', [TransaksiController::class, 'historyTransaksi']);
+        Route::post('transaksi', [TransaksiController::class, 'membuatPesanan']);
+
         // logout
         Route::post('logout', [AuthController::class, 'logout']);
 
@@ -57,8 +66,6 @@ Route::group(['prefix' => 'v1'], function() {
             Route::put('penjual/{id_penjual}', [PenjualController::class, 'updatePenjual']);
             Route::get('penjual/{id_penjual}/produk',[PenjualController::class, 'listProdukPenjual']);
 
-            // Transaksi/Pesanan
-            Route::post('transaksi', [TransaksiController::class, 'membuatPesanan']);
         });
         // kategori produk
     });

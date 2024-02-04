@@ -6,6 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
 use App\Models\Pesanan;
+use App\Models\PesananProduk;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class TransaksiController extends Controller
         try {
             $this->validate($request, [
                 'total_harga' => ['required'],
+                'keranjang' => ['required','array'],
             ]);
 
             $data = $request->except('_token');
@@ -30,6 +32,15 @@ class TransaksiController extends Controller
             $data['status'] = 'Pending';
 
             $pesanan = Pesanan::create($data);
+            foreach ($data['keranjang'] as $key => $value) {
+                $pesanan_produk = array(
+                    'id_pesanan' => $pesanan->id,
+                    'id_produk' => $value['id'],
+                    'jumlah_produk' => $value['jumlah_produk'],
+                );
+
+                PesananProduk::create($pesanan_produk);
+            }
             $data_pembayaran = array(
                 'id_pesanan' => $pesanan->id,
                 'metode' => 'COD',
@@ -64,6 +75,17 @@ class TransaksiController extends Controller
                 500
             );
         }
+    }
+
+    public function historyTransaksi()
+    {
+        $id = Auth::user()->id;
+        $pesanan = Pesanan::where('id_user', $id)->get();
+
+        return ResponseFormatter::success(
+            $pesanan,
+            'Berhasil data transaksi'
+        );
     }
 
     private function formatDateAndInvoiceNumber()

@@ -15,7 +15,7 @@ class PembeliController extends Controller
      */
     public function index()
     {
-        $pembeli = User::where('role', 'Pembeli')
+        $pembeli = User::where('role', 'User')
             ->get();
 
         return view('admin.pembeli.index', compact('pembeli'));

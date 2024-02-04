@@ -28,6 +28,7 @@ class PenjualController extends Controller
     public function create()
     {
         $user = User::where('role', '!=', 'Admin')
+            ->doesntHave('penjual')
             ->get();
 
         return view('admin.penjual.manage', compact('user'));

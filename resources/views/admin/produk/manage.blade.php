@@ -30,8 +30,7 @@
                 @endif
                 <div class="form-group">
                     <label for="example-text-input" class="form-control-label">Upload Gambar Produk</label>
-                    <input class="form-control" value="{{ old('gambar', @$produk->gambar) }}" type="file"
-                        name="gambar">
+                    <input class="form-control" value="{{ old('gambar', @$produk->gambar) }}" type="file" name="gambar">
                 </div>
                 <div class="form-group">
                     <label>Penjual/Toko</label>
@@ -57,22 +56,22 @@
                 </div>
                 <div class="form-group">
                     <label>Nama Produk</label>
-                    <input type="text" placeholder="Masukkan Nama Produk" value="{{ old('nama', @$produk->nama) }}" name="nama"
-                        class="form-control">
+                    <input type="text" placeholder="Masukkan Nama Produk" value="{{ old('nama', @$produk->nama) }}"
+                        name="nama" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Jumlah</label>
-                    <input type="number" min="1" placeholder="Masukkan Jumlah Produk" value="{{ old('jumlah', @$produk->jumlah) }}" name="jumlah"
-                        class="form-control">
+                    <input type="number" min="1" placeholder="Masukkan Jumlah Produk"
+                        value="{{ old('jumlah', @$produk->jumlah) }}" name="jumlah" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Harga</label>
-                    <input type="number" min="1" placeholder="Masukkan Harga Produk" value="{{ old('harga', @$produk->harga) }}" name="harga"
-                        class="form-control">
+                    <input type="number" min="1" placeholder="Masukkan Harga Produk"
+                        value="{{ old('harga', @$produk->harga) }}" name="harga" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Deskripsi</label>
-                    <textarea id="editor" name="deskripsi">{!! old('deskripsi', @$produk->deskripsi) !!}</textarea>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="deskripsi">{{ old('deskripsi', @$produk->deskripsi) }}</textarea>
                 </div>
                 <div class="mt-3">
                     <button class="btn btn-sm btn-primary w-100" type="submit"><strong>Simpan</strong></button>

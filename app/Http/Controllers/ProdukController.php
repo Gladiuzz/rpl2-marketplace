@@ -81,7 +81,9 @@ class ProdukController extends Controller
      */
     public function show($id)
     {
-        //
+        $produk = Produk::findorFail($id);
+
+        return view('admin.produk.show', compact('produk'));
     }
 
     /**
@@ -158,5 +160,20 @@ class ProdukController extends Controller
         $produk->delete();
 
         return redirect()->route('produk.index')->with('success', 'Produk Berhasil Dihapus');
+    }
+
+    public function updateStatus($id)
+    {
+        $produk = Produk::findorFail($id);
+
+        if ($produk->status == 'Aktif') {
+            $produk->status = 'Non Aktif';
+        } else {
+            $produk->status = 'Aktif';
+        }
+
+        $produk->update();
+
+        return redirect()->route('produk.index')->with('success', 'Status produk berhasil di update');
     }
 }

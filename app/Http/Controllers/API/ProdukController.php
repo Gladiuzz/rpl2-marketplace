@@ -20,7 +20,8 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        $produk = Produk::all();
+        $produk = Produk::where('status', 'Aktif')
+        ->get();
 
         if ($produk) {
             return ResponseFormatter::success(

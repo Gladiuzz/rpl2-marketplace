@@ -22,7 +22,8 @@ class TransaksiController extends Controller
         try {
             $this->validate($request, [
                 'total_harga' => ['required'],
-                'keranjang' => ['required','array'],
+                'alamat' => ['required'],
+                'keranjang' => ['required', 'array'],
             ]);
 
             $data = $request->except('_token');
@@ -82,10 +83,100 @@ class TransaksiController extends Controller
         $id = Auth::user()->id;
         $pesanan = Pesanan::where('id_user', $id)->get();
 
+        if ($pesanan) {
+            return ResponseFormatter::success(
+                $pesanan,
+                'Berhasil mengambil data transaksi'
+            );
+        } else {
+            return ResponseFormatter::error(
+                null,
+                'Data transaksi tidak ada',
+                404,
+            );
+        }
+    }
+
+    public function updateStatusPesananPenjual($id)
+    {
+        $pesanan = Pesanan::with('pesananProduk.produk')
+            ->whereHas('pesananProduk', function ($query) {
+                $query->whereHas('produk', function ($value) {
+                    $penjual = Auth::user()->penjual;
+                    $value->where('id_penjual', $penjual->id);
+                });
+            })->find($id);
+
+        switch ($pesanan->status) {
+            case 'Pending':
+                $pesanan->status = 'Dikonfirmasi';
+                break;
+            case 'Dikonfirmasi':
+                foreach ($pesanan->pesananProduk as $key => $value) {
+                    $value['status'] = 'Diproses';
+                    $value->update();
+                }
+                $pesanan->status = 'Diproses';
+                break;
+            case 'Diproses':
+                foreach ($pesanan->pesananProduk as $key => $value) {
+                    $value['status'] = 'Dikirim';
+                    $value->update();
+                }
+                $pesanan->status = 'Dikirim';
+                break;
+            default:
+                return ResponseFormatter::error(
+                    null,
+                    'Transaksi sudah dikonfirmasi',
+                    404,
+                );
+                break;
+        }
+
+        $pesanan->update();
+
         return ResponseFormatter::success(
-            $pesanan,
-            'Berhasil data transaksi'
+            'Berhasil update status transaksi'
         );
+    }
+
+    public function updateStatusPesananUser($id)
+    {
+        $pesanan = Pesanan::with(['pesananProduk.produk', 'pembayaran'])
+            ->find($id);
+
+        // $allStatus = $pesanan->pesananProduk->where('status', 'Dikirim')->count();
+        // return array(
+        //     'dikirim' => $allStatus,
+        //     'semua' => $pesanan->pesananProduk->count(),
+        // );
+
+        switch ($pesanan->pembayaran->metode) {
+            case 'COD':
+                $this->updateStatusCOD($pesanan);
+                break;
+            default:
+                return ResponseFormatter::error(
+                    null,
+                    'Metode Pembayaran Tidak Valid atau transaksi sudah selesai',
+                    404,
+                );
+                break;
+        }
+
+        if ($pesanan->status != 'Selesai') {
+            return ResponseFormatter::success(
+                $pesanan,
+                'Berhasil update status transaksi & produk transaksi'
+            );
+        } else {
+            return ResponseFormatter::error(
+                null,
+                'Transaksi sudah selesai',
+                404,
+            );
+        }
     }
 
     private function formatDateAndInvoiceNumber()
@@ -104,5 +195,44 @@ class TransaksiController extends Controller
         );
 
         return $data;
+    }
+
+    private function updateStatusCOD(Pesanan $pesanan)
+    {
+        switch ($pesanan->status) {
+            case 'Dikirim':
+                foreach ($pesanan->pesananProduk as $key => $value) {
+                    $value['status'] = 'Diterima';
+                    $value->update();
+                }
+                $pesanan->status = 'Diterima';
+                break;
+            case 'Diterima':
+                $pesanan->pembayaran->status = 'Sudah Dibayar';
+
+                foreach ($pesanan->pesananProduk as $key => $value) {
+                    $value['status'] = 'Dibayar';
+                    $value->update();
+                }
+                $pesanan->status = 'Dibayar';
+                $pesanan->pembayaran->update();
+                break;
+            case 'Dibayar':
+                foreach ($pesanan->pesananProduk as $key => $value) {
+                    $value['status'] = 'Selesai';
+                    $value->update();
+                }
+                $pesanan->status = 'Selesai';
+                break;
+            default:
+                return ResponseFormatter::error(
+                    null,
+                    'Transaksi sudah selesai',
+                    404,
+                );
+                break;
+        }
+
+        $pesanan->update();
     }
 }

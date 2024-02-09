@@ -38,6 +38,7 @@
                             <th>Nama</th>
                             <th>Jumlah</th>
                             <th>Harga</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -50,7 +51,13 @@
                                 <td>{{ $item->nama }}</td>
                                 <td>{{ $item->jumlah }}</td>
                                 <td>@currency($item->harga)</td>
+                                <td class={{ $item->status == 'Non Aktif' ? 'text-danger' : 'text-navy' }}>
+                                    {{ $item->status }}</td>
                                 <td>
+                                    <a href="{{ route('produk.update.status', ['id' => $item->id]) }}"><i
+                                        class='fa btn btn-{{ $item->status == 'Non Aktif' ? 'success' : 'secondary' }} fa-check'></i></a>
+                                        <a href="{{ route('produk.show', ['produk' => $item->id]) }}"><i
+                                            class='fa btn btn-primary fa-eye'></i></a>
                                     <a href="{{ route('produk.edit', ['produk' => $item->id]) }}"><i
                                             class='fa btn btn-warning fa-edit'></i></a>
                                     <a href="#" data-toggle="modal" data-target="#delete{{ $item->id }}"> <i

@@ -12,7 +12,7 @@ class PesananProduk extends Model
     protected $table = 'pesanan_produk';
 
     protected $fillable = [
-        'id_pesanan','id_produk','jumlah_produk',
+        'id_pesanan','id_produk','jumlah_produk','status'
     ];
 
     public function pesanan()

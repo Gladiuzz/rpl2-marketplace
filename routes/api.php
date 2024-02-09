@@ -34,7 +34,7 @@ Route::group(['prefix' => 'v1'], function() {
 
     // list produk
     Route::get('produk', [ProdukController::class, 'index']);
-   
+
 
     Route::middleware(['auth:sanctum'])->group(function() {
         // user
@@ -44,11 +44,13 @@ Route::group(['prefix' => 'v1'], function() {
         // Transaksi/Pesanan
         Route::get('transaksi', [TransaksiController::class, 'historyTransaksi']);
         Route::post('transaksi', [TransaksiController::class, 'membuatPesanan']);
+        Route::get('transaksi/{id}/update-status', [TransaksiController::class, 'updateStatusPesananUser']);
+
 
         // logout
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('penjual-register', [PenjualController::class, 'daftarSebagaiSeller']);
-        
+
         Route::middleware('penjual')->group(function() {
             // Commend sementara
             // Route::post('kategori-produk', [KategoriProdukController::class, 'store']);
@@ -67,11 +69,13 @@ Route::group(['prefix' => 'v1'], function() {
             Route::put('penjual/{id_penjual}', [PenjualController::class, 'updatePenjual']);
             Route::get('penjual/{id_penjual}/produk',[PenjualController::class, 'listProdukPenjual']);
             Route::get('penjual',[PenjualController::class, 'AllPenjual']);
-           
-        
+
+            // Transaksi/Pesanan
+            Route::get('transaksi/{id}/status', [TransaksiController::class, 'updateStatusPesananPenjual']);
+
+
 
         });
-        // kategori produk
     });
 
 });

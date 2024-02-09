@@ -32,6 +32,7 @@ Route::group(['middleware' => 'admin'], function() {
 
     // Produk
     Route::resource('produk', ProdukController::class);
+    Route::get('produk/{id}/status', [ProdukController::class, 'updateStatus'])->name('produk.update.status');
 
     // Kategori
     Route::resource('kategori', KategoriProdukController::class);

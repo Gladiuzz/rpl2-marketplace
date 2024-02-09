@@ -56,7 +56,7 @@
                                 <td>{{ $item->user->nama }}</td>
                                 <td>@currency($item->total_harga)</td>
                                 <td class={{ $item->status == 'Cancelled' ? 'text-danger' : 'text-navy' }}>
-                                    Pending</td>
+                                    {{ $item->status }}</td>
                                 <td>{{ $item->pembayaran->metode }}</td>
                                 <td>
                                     <a href="{{ route('transaksi.show', ['transaksi' => $item->id]) }}"><i

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Models\Keranjang;
 use App\Models\Pembayaran;
 use App\Models\Pesanan;
 use App\Models\PesananProduk;
@@ -23,8 +24,10 @@ class TransaksiController extends Controller
             $this->validate($request, [
                 'total_harga' => ['required'],
                 'alamat' => ['required'],
-                'keranjang' => ['required', 'array'],
             ]);
+
+            $keranjang = Keranjang::where('id_user', Auth::user()->id)->get();
+
 
             $data = $request->except('_token');
             $data['id_user'] = Auth::user()->id;
@@ -33,15 +36,19 @@ class TransaksiController extends Controller
             $data['status'] = 'Pending';
 
             $pesanan = Pesanan::create($data);
-            foreach ($data['keranjang'] as $key => $value) {
+            foreach ($keranjang as $key => $value) {
                 $pesanan_produk = array(
                     'id_pesanan' => $pesanan->id,
-                    'id_produk' => $value['id'],
-                    'jumlah_produk' => $value['jumlah_produk'],
+                    'id_produk' => $value->id_produk,
+                    'jumlah_produk' => $value->qty_produk,
                 );
 
                 PesananProduk::create($pesanan_produk);
+
+                $value->delete();
             }
+
+
             $data_pembayaran = array(
                 'id_pesanan' => $pesanan->id,
                 'metode' => 'COD',
@@ -99,31 +106,31 @@ class TransaksiController extends Controller
 
     public function updateStatusPesananPenjual($id)
     {
-        $pesanan = Pesanan::with('pesananProduk.produk')
-            ->whereHas('pesananProduk', function ($query) {
-                $query->whereHas('produk', function ($value) {
-                    $penjual = Auth::user()->penjual;
+        $penjual = Auth::user()->penjual;
+        $pesanan = Pesanan::with(['pesananProduk.produk'])
+            ->whereHas('pesananProduk', function ($query) use ($penjual) {
+                $query->whereHas('produk', function ($value) use ($penjual) {
                     $value->where('id_penjual', $penjual->id);
                 });
             })->find($id);
 
         switch ($pesanan->status) {
             case 'Pending':
-                $pesanan->status = 'Dikonfirmasi';
+                $this->cekPenjualTerkait($pesanan, 'Dikonfirmasi', 'Pending');
                 break;
             case 'Dikonfirmasi':
                 foreach ($pesanan->pesananProduk as $key => $value) {
                     $value['status'] = 'Diproses';
                     $value->update();
                 }
-                $pesanan->status = 'Diproses';
+                $this->cekPenjualTerkait($pesanan, 'Diproses', 'Diproses');
                 break;
             case 'Diproses':
                 foreach ($pesanan->pesananProduk as $key => $value) {
                     $value['status'] = 'Dikirim';
                     $value->update();
                 }
-                $pesanan->status = 'Dikirim';
+                $this->cekPenjualTerkait($pesanan, 'Dikirim', 'Dikirim');
                 break;
             default:
                 return ResponseFormatter::error(
@@ -134,7 +141,7 @@ class TransaksiController extends Controller
                 break;
         }
 
-        $pesanan->update();
+
 
         return ResponseFormatter::success(
             'Berhasil update status transaksi'
@@ -146,11 +153,7 @@ class TransaksiController extends Controller
         $pesanan = Pesanan::with(['pesananProduk.produk', 'pembayaran'])
             ->find($id);
 
-        // $allStatus = $pesanan->pesananProduk->where('status', 'Dikirim')->count();
-        // return array(
-        //     'dikirim' => $allStatus,
-        //     'semua' => $pesanan->pesananProduk->count(),
-        // );
+
 
         switch ($pesanan->pembayaran->metode) {
             case 'COD':
@@ -234,5 +237,14 @@ class TransaksiController extends Controller
         }
 
         $pesanan->update();
+    }
+
+    public function cekPenjualTerkait(Pesanan $pesanan, $status, $statusProduk)
+    {
+        $allStatus = $pesanan->pesananProduk->where('status', $statusProduk)->count() == $pesanan->pesananProduk->count();
+        if ($allStatus) {
+            $pesanan->status = $status;
+            $pesanan->update();
+        }
     }
 }

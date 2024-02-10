@@ -29,4 +29,9 @@ class Produk extends Model
     {
         return $this->belongsTo(Penjual::class, 'id_penjual', 'id');
     }
+
+    public function keranjang()
+    {
+        return $this->hasMany(Keranjang::class, 'id_produk', 'id');
+    }
 }

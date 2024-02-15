@@ -104,6 +104,25 @@ class TransaksiController extends Controller
             );
         }
     }
+    public function detailHistoryTransaksi($id)
+    {
+        $id_user = Auth::user()->id;
+        $pesanan = Pesanan::with(['pesananProduk.produk'])
+        ->where('id_user', $id_user)->find($id);
+
+        if ($pesanan) {
+            return ResponseFormatter::success(
+                $pesanan,
+                'Berhasil mengambil data transaksi'
+            );
+        } else {
+            return ResponseFormatter::error(
+                null,
+                'Data transaksi tidak ada',
+                404,
+            );
+        }
+    }
 
     public function historyTransaksiPenjual()
     {
@@ -114,6 +133,30 @@ class TransaksiController extends Controller
                     $value->where('id_penjual', $penjual->id);
                 });
             })->get();
+
+        if ($pesanan) {
+            return ResponseFormatter::success(
+                $pesanan,
+                'Berhasil mengambil data transaksi'
+            );
+        } else {
+            return ResponseFormatter::error(
+                null,
+                'Data transaksi tidak ada',
+                404,
+            );
+        }
+    }
+
+    public function detailHistoryTransaksiPenjual($id)
+    {
+        $penjual = Auth::user()->penjual;
+        $pesanan = Pesanan::with(['pesananProduk.produk'])
+            ->whereHas('pesananProduk', function ($query) use ($penjual) {
+                $query->whereHas('produk', function ($value) use ($penjual) {
+                    $value->where('id_penjual', $penjual->id);
+                });
+            })->find($id);
 
         if ($pesanan) {
             return ResponseFormatter::success(

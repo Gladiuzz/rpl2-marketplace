@@ -54,6 +54,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Transaksi/Pesanan
         Route::get('transaksi', [TransaksiController::class, 'historyTransaksi']);
+        Route::get('transaksi/{id}', [TransaksiController::class, 'detailHistoryTransaksi']);
         Route::post('transaksi', [TransaksiController::class, 'membuatPesanan']);
         Route::get('transaksi/{id}/update-status', [TransaksiController::class, 'updateStatusPesananUser']);
 
@@ -82,6 +83,7 @@ Route::group(['prefix' => 'v1'], function () {
 
             // Transaksi/Pesanan
             Route::get('transaksi/{id}/status', [TransaksiController::class, 'updateStatusPesananPenjual']);
+            Route::get('transaksi/{id}/penjual', [TransaksiController::class, 'detailHistoryTransaksiPenjual']);
             Route::get('transaksi/penjual', [TransaksiController::class, 'historyTransaksiPenjual']);
         });
     });

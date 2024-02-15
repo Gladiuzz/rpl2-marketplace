@@ -315,4 +315,29 @@ class TransaksiController extends Controller
             $pesanan->update();
         }
     }
+
+    
+    public function transaksiPenjual()
+    {
+        $penjual = Auth::user()->penjual;
+        $transaksi = Pesanan::with(['pesananProduk.produk'])
+            ->whereHas('pesananProduk', function ($query) use ($penjual) {
+                $query->whereHas('produk', function ($value) use ($penjual) {
+                    $value->where('id_penjual', $penjual->id);
+                });
+            })->get();
+
+        if ($transaksi->isEmpty()) {
+            return ResponseFormatter::error(
+                null,
+                'Tidak ada transaksi terkait dengan penjual ini',
+                404
+            );
+        } else {
+            return ResponseFormatter::success(
+                $transaksi,
+                'Berhasil mengambil data transaksi penjual'
+            );
+        }
+}
 }

@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::group(['prefix' => 'v1'], function() {
+Route::group(['prefix' => 'v1'], function () {
     // login
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
@@ -35,12 +35,14 @@ Route::group(['prefix' => 'v1'], function() {
 
     // list produk
     Route::get('produk', [ProdukController::class, 'index']);
+    Route::get('produk/{id}', [ProdukController::class, 'show']);
 
     // list Penjual
-    Route::get('penjual',[PenjualController::class, 'AllPenjual']);
+    Route::get('penjual', [PenjualController::class, 'AllPenjual']);
+    Route::get('penjual/{id_penjual}', [PenjualController::class, 'indexPenjual']);
 
 
-    Route::middleware(['auth:sanctum'])->group(function() {
+    Route::middleware(['auth:sanctum'])->group(function () {
         // user
         Route::get('pembeli', [PembeliController::class, 'index']);
         Route::put('pembeli', [PembeliController::class, 'update']);
@@ -55,13 +57,13 @@ Route::group(['prefix' => 'v1'], function() {
         Route::post('transaksi', [TransaksiController::class, 'membuatPesanan']);
         Route::get('transaksi/{id}/update-status', [TransaksiController::class, 'updateStatusPesananUser']);
 
-
-
         // logout
         Route::post('logout', [AuthController::class, 'logout']);
+
+        // daftar penjual
         Route::post('penjual-register', [PenjualController::class, 'daftarSebagaiSeller']);
 
-        Route::middleware('penjual')->group(function() {
+        Route::middleware('penjual')->group(function () {
             // Commend sementara
             // Route::post('kategori-produk', [KategoriProdukController::class, 'store']);
             // Route::get('kategori-produk/{id}', [KategoriProdukController::class, 'show']);
@@ -70,21 +72,17 @@ Route::group(['prefix' => 'v1'], function() {
 
             // produk
             Route::post('produk', [ProdukController::class, 'store']);
-            Route::get('produk/{id}', [ProdukController::class, 'show']);
             Route::put('produk/{id}', [ProdukController::class, 'update']);
             Route::delete('produk/{id}', [ProdukController::class, 'destroy']);
 
             // penjual
-            Route::get('penjual/{id_penjual}', [PenjualController::class, 'indexPenjual']);
+
             Route::put('penjual/{id_penjual}', [PenjualController::class, 'updatePenjual']);
-            Route::get('penjual/{id_penjual}/produk',[PenjualController::class, 'listProdukPenjual']);
+            Route::get('penjual/{id_penjual}/produk', [PenjualController::class, 'listProdukPenjual']);
 
             // Transaksi/Pesanan
             Route::get('transaksi/{id}/status', [TransaksiController::class, 'updateStatusPesananPenjual']);
-
-
-
+            Route::get('transaksi/penjual', [TransaksiController::class, 'historyTransaksiPenjual']);
         });
     });
-
 });

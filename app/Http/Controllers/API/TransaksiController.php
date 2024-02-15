@@ -88,7 +88,32 @@ class TransaksiController extends Controller
     public function historyTransaksi()
     {
         $id = Auth::user()->id;
-        $pesanan = Pesanan::where('id_user', $id)->get();
+        $pesanan = Pesanan::with(['pesananProduk.produk'])
+        ->where('id_user', $id)->get();
+
+        if ($pesanan) {
+            return ResponseFormatter::success(
+                $pesanan,
+                'Berhasil mengambil data transaksi'
+            );
+        } else {
+            return ResponseFormatter::error(
+                null,
+                'Data transaksi tidak ada',
+                404,
+            );
+        }
+    }
+
+    public function historyTransaksiPenjual()
+    {
+        $penjual = Auth::user()->penjual;
+        $pesanan = Pesanan::with(['pesananProduk.produk'])
+            ->whereHas('pesananProduk', function ($query) use ($penjual) {
+                $query->whereHas('produk', function ($value) use ($penjual) {
+                    $value->where('id_penjual', $penjual->id);
+                });
+            })->get();
 
         if ($pesanan) {
             return ResponseFormatter::success(

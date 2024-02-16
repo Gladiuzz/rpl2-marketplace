@@ -89,7 +89,7 @@ class TransaksiController extends Controller
     {
         $id = Auth::user()->id;
         $pesanan = Pesanan::with(['pesananProduk.produk'])
-        ->where('id_user', $id)->get();
+            ->where('id_user', $id)->get();
 
         if ($pesanan) {
             return ResponseFormatter::success(
@@ -108,7 +108,7 @@ class TransaksiController extends Controller
     {
         $id_user = Auth::user()->id;
         $pesanan = Pesanan::with(['pesananProduk.produk'])
-        ->where('id_user', $id_user)->find($id);
+            ->where('id_user', $id_user)->find($id);
 
         if ($pesanan) {
             return ResponseFormatter::success(
@@ -316,28 +316,4 @@ class TransaksiController extends Controller
         }
     }
 
-    
-    public function transaksiPenjual()
-    {
-        $penjual = Auth::user()->penjual;
-        $transaksi = Pesanan::with(['pesananProduk.produk'])
-            ->whereHas('pesananProduk', function ($query) use ($penjual) {
-                $query->whereHas('produk', function ($value) use ($penjual) {
-                    $value->where('id_penjual', $penjual->id);
-                });
-            })->get();
-
-        if ($transaksi->isEmpty()) {
-            return ResponseFormatter::error(
-                null,
-                'Tidak ada transaksi terkait dengan penjual ini',
-                404
-            );
-        } else {
-            return ResponseFormatter::success(
-                $transaksi,
-                'Berhasil mengambil data transaksi penjual'
-            );
-        }
-}
 }
